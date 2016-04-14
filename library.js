@@ -7,6 +7,7 @@
    * 
    * - Steam.getStrategy 
    * - Steam.getAssociation
+   * - Possibly Deleting?
    * 
    * 
    * **/
@@ -100,7 +101,31 @@
         });
       };
   
-      Steam.getAssociation
+      Steam.getAssociation = function(data, callback) {
+        		user.getUserField(data.uid, 'steamid', function(err, steamID) {
+        			if (err) {
+        				return callback(err, data);
+        			}
+        
+        			if (steamID) {
+        				data.associations.push({
+        					associated: true,
+        					url: 'http://steamcommunity.com/profiles/' + steamID,
+        					name: constants.name,
+        					icon: constants.admin.icon
+        				});
+        			} else {
+        				data.associations.push({
+        					associated: false,
+        					url: module.parent.require('nconf').get('url') + '/auth/steam',
+        					name: constants.name,
+        					icon: constants.admin.icon
+        				});
+        			}
+        
+        			callback(null, data);
+        		})
+        	};
   
   
   
