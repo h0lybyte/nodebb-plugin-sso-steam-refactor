@@ -2,6 +2,16 @@
   "use strict";
 
 
+  /**
+   * Couple Functions Left to finish:
+   * 
+   * - Steam.getStrategy 
+   * - Steam.getAssociation
+   * 
+   * 
+   * **/
+
+
   var user = module.parent.require('./user.js'),
       db = module.parent.require('../src/database.js'),
       meta = module.parent.require('./meta'),
