@@ -5,7 +5,7 @@
   "main": "library.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/h0lybyte/steam-sso-refactor-nodebb"
+    "url": "https://github.com/h0lybyte/nodebb-plugin-steam-sso-refactor"
   },
   "keywords": [
     "nodebb",

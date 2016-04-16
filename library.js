@@ -58,8 +58,9 @@
               				function(identifier, profile, done) {
                                 
                                   process.nextTick(function () {
-                                
-                                         player = {};
+                                        console.log(profile);
+                                        console.log(identifier);
+                                         //player = {};
                                   
                                 
             //            var responseObj = JSON.parse(chunck.toString());
