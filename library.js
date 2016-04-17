@@ -19,9 +19,6 @@
       passportSteam = require('passport-steam').Strategy,
       http = module.parent.require('http'),
       winston = module.parent.require('winston');
-      fs = module.parent.require('fs'),
-	  	path = module.parent.require('path'),
-	  	async = module.parent.require('async');
 
       var constants = Object.freeze({
         'name': 'Steam',
@@ -43,6 +40,7 @@
       		data.router.get('/api/admin/plugins/sso-steam', render);
       		callback();
 	  };
+
   
     Steam.getStrategy = function(strategies, callback) {
         	meta.settings.get('sso-steam', function(err, settings) {
