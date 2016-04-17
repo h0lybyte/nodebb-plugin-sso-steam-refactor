@@ -51,32 +51,26 @@
                                   				    new passportSteam({
                                                 returnURL: module.parent.require('nconf').get('url') + '/auth/steam/callback',
                                                 realm: module.parent.require('nconf').get('url'),
-                                                apiKey: settings['key']
+                                                apiKey: settings['key'],
+                                                passReqToCallback: true
                                       				}, 
                                       				
-                                      			  	function(identifier, profile, done) {
+                                      			  	function(req, identifier, profile, done) {
                                       			  	  
+                                                                          // var userdata = JSON.parse(profile);
+                                                                          //  console.log(identifier);
                                                               			  	  
-                                                          process.nextTick(function () {
-                        
-                                                                                                  			  	  
-                                                                            console.log(profile);
-                                                                            console.log(identifier);
-                                                              			  	  
-                                                              			  	  /**
                                                                   					if (req.hasOwnProperty('user') && req.user.hasOwnProperty('uid') && req.user.uid > 0) {
-                                                                  						// Save Google-specific information to the user
-                                                                  						Steam.setUserField(req.user.uid, 'gplusid', profile.id);
-                                                                  						db.setObjectField('gplusid:uid', profile.id, req.user.uid);
-                                                                  						return done(null, req.user);
-                                                                  					}
-                                                                  
+                                                                    						// Save Google-specific information to the user
+                                                                    						user.setUserField(req.user.uid, 'steamid', profile.id);
+                                                                    						db.setObjectField('steamid:uid', profile.id, req.user.uid);
+                                                                    						return done(null, req.user);
+                                                                    					}
+
+                                    
                                                                   				
                                                                   				
-                                                                  				
-                                                                  				
-                                                                  				
-                                                                  					Steam.login(profile.id, profile.displayName, profile.emails[0].value, profile._json.picture, function(err, user) {
+                                                                  					Steam.login(profile.id, profile.displayName, profile._json.profileurl, profile._json.avatar, function(err, user) {
                                                                   						if (err) {
                                                                   							return done(err);
                                                                   						}
@@ -85,9 +79,7 @@
                                                                   						done(null, user);
                                                                   					});
                                                                   					
-                                                                  					**/
                                                                   					
-                                                          });					
                                       				})
                                       				
                                 				);
@@ -149,8 +141,9 @@
         	};
   
   
-  
-      Steam.login = function(steamID, username, profileUrl, callback) {
+  //	Steam.login(profile.id, profile.displayName, profile._json.avatar, function(err, user) {
+
+      Steam.login = function(steamID, username, profileUrl, avatar, callback) {
           Steam.getUidBySteamID(steamID, function(err, uid) {
             if(err) {
               return callback(err);
@@ -168,14 +161,15 @@
                   callback(err);
                 } else {
                   // Save steam-specific information to the user
+                  
                   user.setUserField(uid, 'steamid', steamID);
                   user.setUserField(uid, 'profileurl', profileUrl);
                   db.setObjectField('steamid:uid', steamID, uid);
       
       
                   // Save their avatar
-                  //user.setUserField(uid, 'uploadedpicture', avatar);
-                  //user.setUserField(uid, 'picture', avatar);
+                  user.setUserField(uid, 'uploadedpicture', avatar);
+                  user.setUserField(uid, 'picture', avatar);
       
                   callback(null, {
                     uid: uid
