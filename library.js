@@ -1,7 +1,6 @@
 (function(module) {
   "use strict";
 
-
   /**
    * Couple Functions Left to finish:
    * 
@@ -32,67 +31,98 @@
         }
       });
   
-  	var authenticationController = module.parent.require('./controllers/authentication');
+  var authenticationController = module.parent.require('./controllers/authentication');
   
-   var Steam = {};
+  var Steam = {};
    
-    Steam.init = function(data, callback) {
-      			function render(req, res, next) {
-  			res.render('admin/plugins/sso-steam', {});
-  		}
-  		data.router.get('/admin/plugins/sso-steam', data.middleware.admin.buildHeader, render);
-  		data.router.get('/api/admin/plugins/sso-steam', render);
-  		callback();
+  Steam.init = function(data, callback) {
+          function render(req, res, next) {
+      			res.render('admin/plugins/sso-steam', {});
+      		}
+      		data.router.get('/admin/plugins/sso-steam', data.middleware.admin.buildHeader, render);
+      		data.router.get('/api/admin/plugins/sso-steam', render);
+      		callback();
 	  };
-	
   
     Steam.getStrategy = function(strategies, callback) {
-        		meta.settings.get('sso-steam', function(err, settings) {
-              			if (!err && settings['key']) {
-              			  
-              				passport.use(new passportSteam({
-              				  returnURL: module.parent.require('nconf').get('url') + '/auth/steam/callback',
-                        realm: module.parent.require('nconf').get('url'),
-                        apiKey: settings['key']
-              				}, 
-              				function(identifier, profile, done) {
-                                
-                                  process.nextTick(function () {
-                                        console.log(profile);
-                                        console.log(identifier);
-                                         //player = {};
-                                  
-                                
-            //            var responseObj = JSON.parse(chunck.toString());
-            //            player.id = responseObj.response.players[0].steamid;
-            //            player.username = responseObj.response.players[0].personaname;
-            //            player.profileurl = responseObj.response.players[0].profileurl;
+        	meta.settings.get('sso-steam', function(err, settings) {
+                    			if (!err && settings['key']) {
+                    			  
+                            				passport.use(
+                            		
+                                  				    new passportSteam({
+                                                returnURL: module.parent.require('nconf').get('url') + '/auth/steam/callback',
+                                                realm: module.parent.require('nconf').get('url'),
+                                                apiKey: settings['key']
+                                      				}, 
+                                      				
+                                      			  	function(identifier, profile, done) {
+                                      			  	  
+                                                              			  	  
+                                                          process.nextTick(function () {
                         
-                                      Steam.login(profile.id, profile.username, profile.profileurl, function(err, user) {
-                                        if (err) {
-                                          return done(err);
-                                        }
-                                        done(null, user);
-                                      });
-                        
-                
-                                    })
-                      }));
-          
-                        strategies.push({
-                          name: 'steam',
-                          url: '/auth/steam',
-                          callbackURL: '/auth/steam/callback',
-                          icon: constants.admin.icon,
-                          scope: 'user:username'
-                        });
-                
-                
-              }
-          
-                callback(null, strategies);
-        });
-      };
+                                                                                                  			  	  
+                                                                            console.log(profile);
+                                                                            console.log(identifier);
+                                                              			  	  
+                                                              			  	  /**
+                                                                  					if (req.hasOwnProperty('user') && req.user.hasOwnProperty('uid') && req.user.uid > 0) {
+                                                                  						// Save Google-specific information to the user
+                                                                  						Steam.setUserField(req.user.uid, 'gplusid', profile.id);
+                                                                  						db.setObjectField('gplusid:uid', profile.id, req.user.uid);
+                                                                  						return done(null, req.user);
+                                                                  					}
+                                                                  
+                                                                  				
+                                                                  				
+                                                                  				
+                                                                  				
+                                                                  				
+                                                                  					Steam.login(profile.id, profile.displayName, profile.emails[0].value, profile._json.picture, function(err, user) {
+                                                                  						if (err) {
+                                                                  							return done(err);
+                                                                  						}
+                                                                  
+                                                                  						authenticationController.onSuccessfulLogin(req, user.uid);
+                                                                  						done(null, user);
+                                                                  					});
+                                                                  					
+                                                                  					**/
+                                                                  					
+                                                          });					
+                                      				})
+                                      				
+                                				);
+                                
+                                
+                                
+                                
+                                
+                                				strategies.push({
+                                					name: 'steam',
+                                					url: '/auth/steam',
+                                					callbackURL: '/auth/steam/callback',
+                                					icon: constants.admin.icon,
+                                          scope: 'user:username'
+                                				});
+                    			}
+                    
+                    			callback(null, strategies);
+      		});
+	      };
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
       Steam.getAssociation = function(data, callback) {
         		user.getUserField(data.uid, 'steamid', function(err, steamID) {

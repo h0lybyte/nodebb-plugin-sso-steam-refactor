@@ -1,16 +1,16 @@
 {
-  "name": "steam-sso-refactor-nodebb",
+  "name": "nodebb-plugin-sso-steam-refactor",
   "version": "0.0.1",
-  "description": "NodeBB Steam SSO _refactor",
+  "description": "NodeBB Steam SSO refactor",
   "main": "library.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/h0lybyte/nodebb-plugin-steam-sso-refactor"
+    "url": "https://github.com/h0lybyte/nodebb-plugin-sso-steam-refactor"
   },
   "keywords": [
     "nodebb",
     "plugin",
-    "openid",s
+    "openid",
     "steam",
     "sso",
     "single sign on",
