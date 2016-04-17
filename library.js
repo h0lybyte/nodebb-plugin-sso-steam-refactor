@@ -1,17 +1,6 @@
 (function(module) {
   "use strict";
 
-  /**
-   * Couple Functions Left to finish:
-   * 
-   * - Steam.getStrategy 
-   * - Steam.getAssociatiof
-   * - Possibly Deleting?
-   * 
-   * 
-   * **/
-
-
   var user = module.parent.require('./user.js'),
       db = module.parent.require('../src/database.js'),
       meta = module.parent.require('./meta'),
@@ -45,49 +34,30 @@
     Steam.getStrategy = function(strategies, callback) {
         	meta.settings.get('sso-steam', function(err, settings) {
                     			if (!err && settings['key']) {
-                    			  
-                            				passport.use(
-                            		
-                                  				    new passportSteam({
+                            				passport.use(new passportSteam({
                                                 returnURL: module.parent.require('nconf').get('url') + '/auth/steam/callback',
                                                 realm: module.parent.require('nconf').get('url'),
                                                 apiKey: settings['key'],
                                                 passReqToCallback: true
-                                      				}, 
-                                      				
-                                      			  	function(req, identifier, profile, done) {
-                                      			  	  
-                                                                          // var userdata = JSON.parse(profile);
-                                                                          //  console.log(identifier);
-                                                              			  	  
-                                                                  					if (req.hasOwnProperty('user') && req.user.hasOwnProperty('uid') && req.user.uid > 0) {
-                                                                    						// Save Google-specific information to the user
-                                                                    						user.setUserField(req.user.uid, 'steamid', profile.id);
-                                                                    						db.setObjectField('steamid:uid', profile.id, req.user.uid);
-                                                                    						return done(null, req.user);
-                                                                    					}
-
-                                    
-                                                                  				
-                                                                  				
-                                                                  					Steam.login(profile.id, profile.displayName, profile._json.profileurl, profile._json.avatar, function(err, user) {
-                                                                  						if (err) {
-                                                                  							return done(err);
-                                                                  						}
+                                      				},function(req, identifier, profile, done) {
+                                      				    if (req.hasOwnProperty('user') && req.user.hasOwnProperty('uid') && req.user.uid > 0) {
+                                                      	user.setUserField(req.user.uid, 'steamid', profile.id);
+                                                      	db.setObjectField('steamid:uid', profile.id, req.user.uid);
+                                                        return done(null, req.user);
+                                                       	}
+                                                  Steam.login(profile.id, profile.displayName, profile._json.profileurl, profile._json.avatarfull, function(err, user) {
+                                                     if (err) {
+                                                       return done(err);
+                                                      	}
                                                                   
-                                                                  						authenticationController.onSuccessfulLogin(req, user.uid);
-                                                                  						done(null, user);
-                                                                  					});
-                                                                  					
-                                                                  					
+                                                        authenticationController.onSuccessfulLogin(req, user.uid);
+                                                        done(null, user);
+                                                       	});
+                                    					
                                       				})
                                       				
                                 				);
-                                
-                                
-                                
-                                
-                                
+
                                 				strategies.push({
                                 					name: 'steam',
                                 					url: '/auth/steam',
@@ -141,31 +111,27 @@
         	};
   
   
-  //	Steam.login(profile.id, profile.displayName, profile._json.avatar, function(err, user) {
 
       Steam.login = function(steamID, username, profileUrl, avatar, callback) {
+          
+      
           Steam.getUidBySteamID(steamID, function(err, uid) {
             if(err) {
               return callback(err);
             }
       
             if (uid !== null) {
-              // Existing User
               callback(null, {
                 uid: uid
               });
             } else {
-              // New User
               user.create({username: username}, function(err, uid) {
                 if (err !== null) {
                   callback(err);
                 } else {
-                  // Save steam-specific information to the user
-                  
                   user.setUserField(uid, 'steamid', steamID);
                   user.setUserField(uid, 'profileurl', profileUrl);
                   db.setObjectField('steamid:uid', steamID, uid);
-      
       
                   // Save their avatar
                   user.setUserField(uid, 'uploadedpicture', avatar);
